@@ -17,8 +17,9 @@ else()
     add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
-# Find OpenGL
-find_package(OpenGL REQUIRED)
+# Create GLAD library
+add_library(glad STATIC external/glad/src/glad.c)
+target_include_directories(glad PUBLIC external/glad/include)
 
 # Configure GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -26,19 +27,23 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 
-# Create GLAD library
-add_library(glad STATIC external/glad/src/glad.c)
-target_include_directories(glad PUBLIC external/glad/include)
+# Configure GLM
+add_library(glm INTERFACE)
+target_include_directories(glm INTERFACE external/glm)
+
+# Find OpenGL
+find_package(OpenGL REQUIRED)
 
 # Create main executable
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h")
-add_executable(${PROJECT_NAME} src/main.cpp)
+file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h" "src/*.hpp")
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
         glad
         glfw
+        glm
         OpenGL::GL
 )
 
