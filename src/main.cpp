@@ -41,7 +41,7 @@ void cursorPosCallback(GLFWwindow* window, double x, double y) {
     g_lastY = y;
 
     g_camera.yaw += xOffset * MOUSE_SENSITIVITY;
-    g_camera.pitch += yOffset * MOUSE_SENSITIVITY;
+    g_camera.pitch -= yOffset * MOUSE_SENSITIVITY;
 
     if (g_camera.pitch > 89.0f) g_camera.pitch = 89.0f;
     if (g_camera.pitch < -89.0f) g_camera.pitch = -89.0f;

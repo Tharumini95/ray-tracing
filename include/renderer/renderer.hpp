@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#include "types.hpp"
+
 struct Camera;
 
 class Renderer {
@@ -15,13 +17,19 @@ private:
 	int m_width;
 	int m_height;
 
-	GLint m_uniformLocCameraPos;
-	GLint m_uniformLocCameraForward;
-	GLint m_uniformLocCameraRight;
-	GLint m_uniformLocCameraUp;
+	GLint m_uLocCameraPos;
+	GLint m_uLocCameraForward;
+	GLint m_uLocCameraRight;
+	GLint m_uLocCameraUp;
+
+	std::vector<Sphere> m_spheres;
+	GLuint m_sphereSSBO = 0;
 
 	void setupShaders();
 	void setupQuad();
+	void setupSpheres();
+
+	void uploadSpheres(const std::vector<Sphere>& spheres);
 
 	void cleanup();
 
