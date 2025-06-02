@@ -35,7 +35,7 @@ target_include_directories(glm INTERFACE external/glm)
 find_package(OpenGL REQUIRED)
 
 # Create main executable
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE SOURCES src/*.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link libraries
@@ -50,8 +50,10 @@ target_link_libraries(${PROJECT_NAME}
 # Include directories
 target_include_directories(${PROJECT_NAME} 
     PRIVATE 
+        ${CMAKE_SOURCE_DIR}/include
         external/glad/include
         external/glfw/include
+        external/glm
 )
 
 # Set output directory

@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include "camera/camera.hpp"
 
 Camera::Camera()
 	: position(0.0f, 0.0f, 0.0f),
