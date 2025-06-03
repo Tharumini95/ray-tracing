@@ -5,6 +5,8 @@
 struct alignas(16) Material {
 	glm::vec3 colour;
 	float _pad0;
+	glm::vec3 emission;
+	float _pad1;
 };
 
 struct alignas(16) Sphere {

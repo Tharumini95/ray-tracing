@@ -18,11 +18,21 @@ struct Ray {
 struct Material {
 	vec3 colour;
 	float _pad0;
+	vec3 emission;
+	float _pad1;
 };
 
 struct Sphere {
 	vec3 position;
 	float radius;
+	Material material;
+};
+
+struct HitInfo {
+	bool hit;
+	float dst;
+	vec3 hitPoint;
+	vec3 normal;
 	Material material;
 };
 
@@ -46,35 +56,72 @@ bool RaySphereIntersect(Ray ray, vec3 centre, float radius, out float dst) {
 	return dst >= 0.0;
 }
 
-void main() {
-	vec2 uv = vUV * 2.0 - 1.0;  // Normalise uv to [-1,1]
-	uv.x *= uResolution.x / uResolution.y;
+HitInfo CalculateRayCollision(Ray ray) {
+	HitInfo closestHit;
+	closestHit.hit = false;
+	closestHit.dst = 1e20;
 
-	// Construct ray
-	Ray ray;
-	ray.origin = uCameraPosition;
-	ray.dir = normalize(uCameraForward - uv.x * uCameraRight + uv.y * uCameraUp);
-
-	float shortestDst = 1e20;
-	vec3 hitColour = vec3(0.0);
-	bool didHit = false;
-
-	// Iterate spheres and check for ray intersections
+	// Find closest intersection
 	for (int i = 0; i < uNumSpheres; ++i) {
 		float dst;
 		if (RaySphereIntersect(ray, spheres[i].position, spheres[i].radius, dst)) {
-			// Only care about the visible intersection
-			if (dst < shortestDst) {
-				shortestDst = dst;
-				hitColour = spheres[i].material.colour;
-				didHit = true;
+			if (dst > 0.0 && dst < closestHit.dst) {
+				closestHit.hit = true;
+				closestHit.dst = dst;
+				closestHit.hitPoint = ray.origin + ray.dir * dst;
+				closestHit.normal = normalize(closestHit.hitPoint - spheres[i].position);
+				closestHit.material = spheres[i].material;
 			}
 		}
 	}
 
-	if (didHit) {
-		FragColour = vec4(hitColour, 1.0);
-	} else {
-		FragColour = vec4(0.0, 0.0, 0.0, 1.0);
+	return closestHit;
+}
+
+vec3 CalculateLighting(HitInfo hit) {
+	vec3 lightColour = vec3(0.0);
+
+	// Find all light sources
+	for (int i = 0; i < uNumSpheres; ++i) {
+		if (spheres[i].material.emission != vec3(0.0)) {
+			vec3 lightPos = spheres[i].position;
+			vec3 lightDir = normalize(lightPos - hit.hitPoint);
+			float lightDst = length(lightPos - hit.hitPoint);
+
+			float dotProduct = max(dot(hit.normal, lightDir), 0.0);
+
+			lightColour += spheres[i].material.emission * hit.material.colour * dotProduct;
+		}
 	}
+
+	return lightColour;
+}
+
+vec3 Trace(Ray ray) {
+	HitInfo hit = CalculateRayCollision(ray);
+
+	if (!hit.hit) {
+		return vec3(0.0);
+	}
+
+	if (hit.material.emission != vec3(0.0)) {
+		return hit.material.emission;
+	}
+
+	vec3 lighting = CalculateLighting(hit);
+
+	return lighting;
+}
+
+void main() {
+	vec2 uv = vUV * 2.0 - 1.0;  // Normalise uv to [-1,1]
+	uv.x *= uResolution.x / uResolution.y;
+
+	Ray ray;
+	ray.origin = uCameraPosition;
+	ray.dir = normalize(uCameraForward - uv.x * uCameraRight + uv.y * uCameraUp);
+
+	vec3 colour = Trace(ray);
+
+	FragColour = vec4(colour, 1.0);
 }

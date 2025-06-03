@@ -80,8 +80,17 @@ void Renderer::setupSpheres() {
         sphere.position = glm::vec3(startX + i * spacing, 0.0f, -3.0f);
         sphere.radius = baseRadius + i * radiusIncrement;
         sphere.material.colour = colours[i];
+        sphere.material.emission = glm::vec3(0.0f);
         m_spheres.push_back(sphere);
     }
+
+    // Light
+    Sphere sphere;
+    sphere.position = glm::vec3(0.0f, 4.0f, -10.0f);
+    sphere.radius = 2.0f;
+    sphere.material.colour = glm::vec3(1.0f);
+    sphere.material.emission = glm::vec3(1.0f);
+    m_spheres.push_back(sphere);
 }
 
 void Renderer::uploadSpheres(const std::vector<Sphere>& spheres) {

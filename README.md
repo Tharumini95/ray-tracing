@@ -29,3 +29,6 @@
         -   b² - 4ac > 0, two solutions, ray enters and exits the sphere
         -   b² - 4ac = 0, one solution, ray just touches the sphere (tangent)
         -   b² - 4ac < 0, no real solutions, no intersection
+
+-   Lambertian (Diffuse) Lighting
+    -   Diffuse = LightColour \* SurfaceColour \* max(Normal · LightDir, 0)
