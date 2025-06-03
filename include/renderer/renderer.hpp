@@ -17,6 +17,8 @@ private:
 	int m_width;
 	int m_height;
 
+	GLint m_uLocResolution;
+
 	GLint m_uLocCameraPos;
 	GLint m_uLocCameraForward;
 	GLint m_uLocCameraRight;

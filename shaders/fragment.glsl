@@ -3,6 +3,8 @@
 in vec2 vUV;
 out vec4 FragColour;
 
+uniform vec2 uResolution;
+
 uniform vec3 uCameraPosition;
 uniform vec3 uCameraForward;
 uniform vec3 uCameraRight;
@@ -46,6 +48,7 @@ bool RaySphereIntersect(Ray ray, vec3 centre, float radius, out float dst) {
 
 void main() {
 	vec2 uv = vUV * 2.0 - 1.0;  // Normalise uv to [-1,1]
+	uv.x *= uResolution.x / uResolution.y;
 
 	// Construct ray
 	Ray ray;

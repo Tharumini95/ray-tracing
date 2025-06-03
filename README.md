@@ -22,7 +22,7 @@
         -   ||(Position + Direction \* dst) - C||² = r²
 
 -   Re-arrange to solve a quadratic for dst
-    -   dst² + 2 _ (OC · Direction) _ dst + (OC · OC - r²) = 0
+    -   dst² + 2 \* (OC · Direction) \* dst + (OC · OC - r²) = 0
         -   Where OC = Position - C
     -   Discriminant = b² - 4ac
         -   = (OC · Direction)² - (OC · OC - r²)

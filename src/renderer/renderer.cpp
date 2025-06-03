@@ -14,6 +14,8 @@ Renderer::Renderer(int width, int height)
 	setupShaders();
 	setupQuad();
     setupSpheres();
+
+    m_uLocResolution = glGetUniformLocation(m_shaderProgram, "uResolution");
 }
 
 Renderer::~Renderer() {
@@ -99,6 +101,8 @@ void Renderer::render(const Camera& camera) {
 
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(m_shaderProgram);
+
+    glUniform2f(m_uLocResolution, (float)m_width, (float)m_height);
 
     // Upload spheres
     uploadSpheres(m_spheres);
